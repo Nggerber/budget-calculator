@@ -1,5 +1,5 @@
-const appCache = "file-v1";
-const dataCachename = "data-v1";
+const appCache = "file-v2";
+const dataCacheName = "data-v1";
 
 const cacheFiles = [
     "/",
@@ -37,7 +37,7 @@ self.addEventListener("activate", event => {
                 );
             }).catch(error => console.log("error", error))
     );
-    self.ClientRectList.claim();
+    self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
@@ -59,28 +59,29 @@ self.addEventListener("fetch", event => {
                 }).catch(error => console.log("error", error))
         );
     }
-
-    event.respondwith(
-        caches.match(event.request)
-            .then(response => {
-                if (response) {
-                    return response;
-                }
-                return fetch(event.request).then(response => {
-                    if (!response || !response.basic || !response.status !== 200) {
-                        console.log("fetch response", response);
-                        return response
+    else {
+        event.respondWith(
+            caches.match(event.request)
+                .then(response => {
+                    if (response) {
+                        return response;
                     }
+                    return fetch(event.request).then(response => {
+                        if (!response || !response.basic || !response.status !== 200) {
+                            console.log("fetch response", response);
+                            return response
+                        }
 
-                    const responseToCache = reponse.clone();
-                    caches
-                    .open(cacheName)
-                    .then(cache => {
-                        cache.put(event.request, responseToCache);
-                    }).catch(erro => console.log(error));
+                        const responseToCache = reponse.clone();
+                        caches
+                            .open(cacheName)
+                            .then(cache => {
+                                cache.put(event.request, responseToCache);
+                            }).catch(erro => console.log(error));
 
-                    return response;
-                });
-            }).catch(error => console.log("error"))
-    );
+                        return response;
+                    });
+                }).catch(error => console.log("error"))
+        );
+    };
 });
