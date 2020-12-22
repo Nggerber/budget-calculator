@@ -7,7 +7,8 @@ const cacheFiles = [
     "/db.js",
     "/index.js",
     "/icons/icon-192X192.png",
-    "/icons/icon-512x512.png"
+    "/icons/icon-512x512.png",
+    "/manifest.webmanifest"
 ];
 
 self.addEventListener("install", event => {
